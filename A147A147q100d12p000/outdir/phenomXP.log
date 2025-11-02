@@ -1,0 +1,39 @@
+14:11 INFO    : Waveform generator instantiated: WaveformGenerator(duration=0.453369140625, sampling_frequency=4096.0, start_time=0.0, frequency_domain_source_model=None, time_domain_source_model=__main__.nr_injection, parameter_conversion=bilby.gw.conversion.convert_to_lal_binary_black_hole_parameters, waveform_arguments={})
+14:11 WARNING : The injected signal has a duration in-band of 1.9s, but the data for detector H1 has a duration of 0.453369140625s
+14:11 INFO    : Injected signal in H1:
+14:11 INFO    :   optimal SNR = 42.04
+14:11 INFO    :   matched filter SNR = 42.49-0.61j
+14:11 INFO    :   mass_1 = 20.0
+14:11 INFO    :   mass_2 = 20.0
+14:11 INFO    :   a_1 = 0.0
+14:11 INFO    :   a_2 = 0.0
+14:11 INFO    :   tilt_1 = 0.0
+14:11 INFO    :   tilt_2 = 0.0
+14:11 INFO    :   phi_12 = 0.0
+14:11 INFO    :   phi_jl = 0.0
+14:11 INFO    :   luminosity_distance = 250.0
+14:11 INFO    :   theta_jn = 1.0471975512
+14:11 INFO    :   psi = 1.5707963267948966
+14:11 INFO    :   phase = 5.972915950902314
+14:11 INFO    :   geocent_time = 0.330810546875
+14:11 INFO    :   ra = 1.375
+14:11 INFO    :   dec = -1.2108
+14:11 WARNING : The injected signal has a duration in-band of 1.9s, but the data for detector L1 has a duration of 0.453369140625s
+14:11 INFO    : Injected signal in L1:
+14:11 INFO    :   optimal SNR = 29.37
+14:11 INFO    :   matched filter SNR = 29.97-1.26j
+14:11 INFO    :   mass_1 = 20.0
+14:11 INFO    :   mass_2 = 20.0
+14:11 INFO    :   a_1 = 0.0
+14:11 INFO    :   a_2 = 0.0
+14:11 INFO    :   tilt_1 = 0.0
+14:11 INFO    :   tilt_2 = 0.0
+14:11 INFO    :   phi_12 = 0.0
+14:11 INFO    :   phi_jl = 0.0
+14:11 INFO    :   luminosity_distance = 250.0
+14:11 INFO    :   theta_jn = 1.0471975512
+14:11 INFO    :   psi = 1.5707963267948966
+14:11 INFO    :   phase = 5.972915950902314
+14:11 INFO    :   geocent_time = 0.330810546875
+14:11 INFO    :   ra = 1.375
+14:11 INFO    :   dec = -1.2108
