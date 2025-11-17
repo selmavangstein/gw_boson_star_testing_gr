@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import h5py
 import lalsimulation as lalsim
 import lal
+import os
 
 
 #some inverse fourier transform helper 
@@ -67,7 +68,7 @@ sampling_frequency = 4096.0
 
 # Set the binary parameters of the NR inejection waveform
 # this is the angle and distance to the source
-inclination = 1.0471975512
+inclination = 0
 luminosity_distance = 250.
 distance = luminosity_distance * lal.PC_SI * 1.0e6
 phiRef = 0.0
@@ -102,6 +103,7 @@ m2SI = mass_2 * lal.MSUN_SI
 deltaT = 1.0/sampling_frequency #cadence
 
 # we need to set the lowest trustable frequency - set as lowest simulated frequency, scaled by the chosen mass
+#CHANGE THIS AFTER DOING THE TAPERING
 f_lower = f.attrs['f_lower_at_1MSUN']/mtotal  # this choice generates the whole NR waveforms from the beginning
 fRef = 0   #beginning of the waveform
 fStart = f_lower
@@ -138,7 +140,7 @@ for mode in inject_l_modes:
 lalsim.SimInspiralWaveformParamsInsertModeArray(params, ModeArray)
 
 #Generate plus and cross polarisations
-# try an plot later
+# try and plot later
 # si units
 # this is the data from the merger in our direction
 h_p, h_c = lalsim.SimInspiralChooseTDWaveform(m1SI, m2SI, s1x, s1y, s1z,
@@ -147,6 +149,7 @@ h_p, h_c = lalsim.SimInspiralChooseTDWaveform(m1SI, m2SI, s1x, s1y, s1z,
 #Time array    
 times = np.arange(len(h_p.data.data))*h_p.deltaT
 
+#plots of hp, hc sent from merger in our direction
 plt.figure()
 plt.plot(times, h_p.data.data, label="h_p")
 plt.plot(times, h_c.data.data, label="h_c")
@@ -158,6 +161,9 @@ plt.figure()
 plt.plot(times, h_p.data.data + h_c.data.data, label="h_p + h_c")
 plt.savefig("hphc_tot_plot.png")
 
+# I THINK WE CAN TAPER HERE
+# then update, h_p.data and h_c.data
+# important to taper before the below step (setting min freq, duration etc)
 
 amplitude = []
 
@@ -244,7 +250,7 @@ plt.ylabel("Strain")
 plt.legend()
 plt.savefig("outdir/waveform_time_domain.pdf")
 
-# inject the signal into three interferometers and adds noise
+# inject the signal into three interferometers and add noise
 ifos = bilby.gw.detector.InterferometerList(['H1', 'L1'])
 ifos.set_strain_data_from_power_spectral_densities(
     sampling_frequency=sampling_frequency, duration=duration,
@@ -253,7 +259,6 @@ ifos.inject_signal(waveform_generator=waveform,
                    parameters=injection_parameters, raise_error=False);
 
 ifos.plot_data(label="post_injection")
-
 
 # Generate some intermmediate plot files
 # these are different versions of datafiles, prob wont need most of them
@@ -302,3 +307,11 @@ for ifo in ifos:
     np.savetxt("outdir/"+ifo.name+"_frequency_injection_waveform.dat", np.column_stack([plot_frequencies, hf_inj_det[frequency_idxs]]), delimiter='   ')
 
     np.savetxt("outdir/"+ifo.name+"_frequency_asd_injection_waveform.dat", np.column_stack([plot_frequencies, asd_from_freq_series(hf_inj_det[frequency_idxs], 1 / ifo.strain_data.duration)]), delimiter='   ')
+
+    plt.figure()
+    plt.plot(plot_times, ht_inj_det, label="injection")
+    plt.legend()
+    plt.xlabel("Time [s]")
+    plt.ylabel("Strain")
+    plt.title(f"{ifo.name} Injection Waveform")
+    plt.savefig(f"outdir/no_taper_{ifo.name}_injection_waveform.pdf")
