@@ -65,7 +65,8 @@ phiRef = 0.0
 
 mtotal = 40.0
 
-filepath = '/home/tamara.evstafyeva/NR_hdf5/SXS_BBH_0001_Res5.h5'
+#filepath = '/home/tamara.evstafyeva/NR_hdf5/SXS_BBH_0001_Res5.h5'
+filepath = 'H-H1_GWOSC_16KHZ_R1-1126259447-32.hdf5'
 f = h5py.File(filepath, 'r')
     
 params = lal.CreateDict()
