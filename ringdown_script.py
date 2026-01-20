@@ -15,12 +15,27 @@ import os
 #     {"num_modes": 1, "analysis_start_time": so, "output_file": f"fitresults/fit_result_modes_1_start_{str(so).replace('.', '')}.json"} for so in start_offsets1
 # ]
 
-num_modes = [2]
-start_offsets = [12]
+# parameter_sets = [
+#     {"num_modes": nm, "analysis_start_time": so, "output_file": f"fitresults/fit_result_modes_{nm}_start_{str(so).replace('.', '')}.json"} for nm in num_modes for so in start_offsets
+# ]
+
+num_modes = 2
+start_offset = 6
+
+num_chains = [4, 8]
+num_samples = [2000, 4000]
+num_runs = 2
 
 parameter_sets = [
-    {"num_modes": nm, "analysis_start_time": so, "output_file": f"fitresults/fit_result_modes_{nm}_start_{str(so).replace('.', '')}.json"} for nm in num_modes for so in start_offsets
+    {"num_modes": num_modes, 
+     "analysis_start_time": start_offset, 
+     "num_chains": nc, 
+     "num_samples": ns,
+     "output_file": f"fitresults/chaintests/fit_result_modes_{num_modes}_start_{str(start_offset).replace('.', '')}_chains_{nc}_samples_{ns}_run_{run}.json"} for nc in num_chains for ns in num_samples for run in range(num_runs)
 ]
+
+
+
 
 
 print(f"Total configurations to run: {len(parameter_sets)}")
