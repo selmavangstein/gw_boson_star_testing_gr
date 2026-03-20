@@ -1,270 +1,80 @@
-# gw_boson_star_testing_gr: Boson Star Injection & Ringdown Analysis
+# gw_boson_star_testing_gr
 
-This repository generates synthetic gravitational wave signals from boson stars and analyzes their ringdown properties. It serves as the **injection generation pipeline** for the `tdinf_example` parameter estimation framework. Files are **not auto-synced**: you must copy outputs into `tdinf_example/data/` manually (see workflow).
+Boson-star injection generation and ringdown analysis. The repo is organized around active notebooks, active scripts, preserved results, legacy investigations, and ignored local state.
 
-## Overview
+## Structure
 
-This repo contains tools for:
-1. **Injection generation** - Create synthetic boson star signals with NR waveforms
-2. **Ringdown analysis** - Extract and characterize quasi-normal mode (QNM) properties
-3. **Data handoff** - Produce the files that `tdinf_example` needs (metadata, strain, PSDs) for parameter estimation
+- `notebooks/` contains the maintained injection, ringdown, and plotting notebooks.
+- `scripts/` contains automation helpers for running the maintained notebooks.
+- `inputs/` contains tracked waveform inputs such as `inputs/chombo/`.
+- `results/` contains preserved in-repo scientific outputs and archived reference plots.
+- `legacy/` contains old investigations, taper experiments, and older plotting notebooks.
+- `local/` is ignored and holds environments, large dependencies, and scratch/generated files.
 
-## Quick Start
+## Maintained Workflow
 
-### Run Injection Generation
+### 1. Generate injections
 
-Open and execute `barebones_injection.ipynb`:
-- Generates synthetic GW signal with NRSur7dq4 waveform
-- Injects into realistic detector noise
-- Outputs metadata and strain data files
+Run [barebones_injection.ipynb](/home/selmavangstein/mastersproject/gw_boson_star_testing_gr/notebooks/barebones_injection.ipynb).
 
-### Run Ringdown Analysis
+Shared output location:
 
-Open and execute `bs_ringdown.ipynb`:
-- Extracts ringdown phase from full signal
-- Measures quasi-normal mode frequencies and damping times
-- Plots ringdown properties
+- `../datadir/bilby_output/`
 
-### Prepare Data for Parameter Estimation
+Typical files written there:
 
-After running injections (from this repo root):
-```bash
-# Copy generated files to tdinf_example (manual handoff)
-cp injection_metadata.csv ../tdinf_example/data/
-cp H1_injections.h5 ../tdinf_example/data/
-cp L1_injections.h5 ../tdinf_example/data/
-cp H1_PSD.dat ../tdinf_example/data/
-cp L1_PSD.dat ../tdinf_example/data/
-```
+- `<prefix>_injection_data.csv`
+- `<prefix>_injection_metadata.csv`
+- `<prefix>_H1_injection_data.h5`
+- `<prefix>_L1_injection_data.h5`
+- `hp.csv`
+- `hc.csv`
 
-Then proceed to `tdinf_example/code/` to run parameter estimation.
+### 2. Run ringdown fits
 
-## Repository Structure
+Run [bs_ringdown.ipynb](/home/selmavangstein/mastersproject/gw_boson_star_testing_gr/notebooks/bs_ringdown.ipynb).
 
-```
-gw_boson_star_testing_gr/
-├── barebones_injection.ipynb         # MAIN: generate synthetic injections
-├── bs_ringdown.ipynb                 # MAIN: ringdown analysis pipeline
-├── plot_ringdown_results.ipynb       # Plots/post-processing for ringdown fits
-│
-├── H1_PSD.dat / L1_PSD.dat           # PSDs used for injections
-├── H-H1_GWOSC_16KHZ_R1-*.hdf5        # Reference detector data (optional)
-├── SEOBNRv4ROM_v*.hdf5               # Waveform model support files
-├── chombo/                           # NR simulation data (GRChombo outputs)
-│
-├── ringdown_results/                 # NetCDF fit outputs
-├── ringdown_results_plots/           # Generated plots from ringdown notebooks
-├── good_plots/                       # Curated figures
-│
-├── legacy/                           # Old tests/pipelines kept but not used
-│   ├── full_working_pipeline*.ipynb
-│   ├── taper_tests.ipynb
-│   ├── plot_archive/
-│   ├── interim_report_plots/
-│   └── misc test scripts/notebooks
-│
-├── outdir/                           # Scratch outputs (may be empty)
-├── bilby_outputs/                    # Legacy bilby tests (unused)
-└── README.md                         # This file
-```
+Inputs:
 
-## Core Analysis Notebooks
+- `../datadir/bilby_output/<prefix>_injection_data.csv`
+- `../datadir/bilby_output/<prefix>_injection_metadata.csv`
 
-### 1. barebones_injection.ipynb 
+Ringdown result output location:
 
-**Purpose**: Generate synthetic boson star signal with injection into detector noise
+- `../datadir/ringdown_output/`
+- `results/ringdown/plots/`
 
-**Key steps**:
-- Define boson star parameters:
-  - Total mass (default: 71.5 M☉)
-  - Luminosity distance (default: 175 Mpc)
-  - Sky position (RA, dec)
-  - Polarization angle
-  - Inclination angle
-  - Reference frequency (NRSur7dq4 start frequency)
-- Generate NR waveform using NRSur7dq4 approximant
-- Inject into LIGO/Virgo noise realizations
-- Generate output files:
-  - `injection_metadata.csv` - All injection parameters (17 fields)
-  - `H1_injections.h5` - H1 detector strain data
-  - `L1_injections.h5` - L1 detector strain data
-  - `H1_PSD.dat` - H1 power spectral density
-  - `L1_PSD.dat` - L1 power spectral density
+### 3. Plot products
 
-**Output location**: Root directory (must be copied to `tdinf_example/data/`)
+Maintained plotting notebooks:
 
-### 2. bs_ringdown.ipynb 
+- [plot_ringdown_results.ipynb](/home/selmavangstein/mastersproject/gw_boson_star_testing_gr/notebooks/plot_ringdown_results.ipynb)
+- [plot_ringdown_mode_corner_plots.ipynb](/home/selmavangstein/mastersproject/gw_boson_star_testing_gr/notebooks/plot_ringdown_mode_corner_plots.ipynb)
+- [plot_barebones_injection_outputs.ipynb](/home/selmavangstein/mastersproject/gw_boson_star_testing_gr/notebooks/plot_barebones_injection_outputs.ipynb)
 
-**Purpose**: Extract and analyze ringdown properties from injected signals
+Ringdown plot outputs are preserved under `results/ringdown/plots/`. Scratch or ad hoc exports can still go under `local/generated/`.
 
-**Key steps**:
-- Load injected strain data
-- Extract ringdown phase (post-merger oscillations)
-- Fit to quasi-normal modes (QNMs)
-- Extract frequency and damping time of dominant modes
-- Generate diagnostic plots
+## Preserved Material
 
-**Output**: `ringdown_results/` (NetCDF fit results) and `ringdown_results_plots/` (figures)
+- `results/archive/` holds preserved result-like plots from earlier work.
+- `legacy/taper/plots/` holds preserved taper-method plots.
+- `legacy/taper/notebooks/`, `legacy/ringdown_tests/notebooks/`, and `legacy/old_plots/notebooks/` hold older notebook references.
 
-### 3. plot_ringdown_results.ipynb
+## Local-Only Files
 
-**Purpose**: Visualize grids of ringdown fits (pair plots, amplitude plots, strain overlays)
+Keep these under ignored `local/` only:
 
-**Inputs**: NetCDF files in `ringdown_results/`
+- `local/env/`
+- `local/deps/`
+- `local/generated/`
 
-**Outputs**: PNGs in `ringdown_results_plots/`
+## Handoff To `tdinf_example`
 
-## Metadata Format
+The maintained `tdinf_example/code/script.sh` reads shared bilby files from:
 
-The `injection_metadata.csv` generated by `barebones_injection.ipynb` contains:
+- `../datadir/bilby_output/`
 
-| Field | Description | Units |
-|-------|-------------|-------|
-| mass | Total mass of binary | M☉ |
-| luminosity_distance | Distance to source | Mpc |
-| ra | Right ascension | radians |
-| dec | Declination | radians |
-| psi | Polarization angle | radians |
-| duration | Signal duration in window | seconds |
-| f_min | Minimum frequency (flow) | Hz |
-| f_max | Maximum frequency | Hz |
-| f_ref | Reference frequency (NRSur7dq4) | Hz |
-| inclination | Orbital inclination | radians |
-| geocent_time | GPS time at geocenter | seconds |
-| h1_arrival_time | H1 signal arrival time | GPS seconds |
-| l1_arrival_time | L1 signal arrival time | GPS seconds |
-| h1_peak_time | H1 peak time | GPS seconds |
-| l1_peak_time | L1 peak time | GPS seconds |
-| sampling_frequency | Data sampling rate | Hz |
-| start_time | Analysis window start time | GPS seconds |
-| pad_time | Padding time around signal | seconds |
+## Notes
 
-**Important fields for tdinf_example**:
-- `injection_metadata.csv` - Required for all parameter estimation
-- `pad_time` - Auto-used as analysis window before merger (Tstart)
-- `f_min`, `f_ref` - Used to set frequency parameters for waveform generation
-
-## Configuration
-
-### Modify Injection Parameters
-
-Edit `barebones_injection.ipynb` cell defining boson star properties:
-
-```python
-# Boson star binary parameters
-mass = 71.5                    # Total mass (M☉)
-luminosity_distance = 175.0   # Distance (Mpc)
-inclination = 0.7109          # Orbital angle (radians)
-
-# Sky position
-ra = 2.333                     # Right ascension
-dec = 0.19                     # Declination
-psi = 1.329                    # Polarization angle
-
-# Frequency parameters
-f_min = 23.38                  # Minimum frequency (Hz)
-f_ref = 0.0                    # Reference (NRSur7dq4 start)
-```
-
-### Modify Ringdown Analysis
-
-Edit `bs_ringdown.ipynb` to adjust:
-- QNM extraction window
-- Fitting methods
-- Mode selection (l=2, m=2, n=0 etc.)
-- Plotting options
-
-## Data File Descriptions
-
-### Waveform Models
-- `SEOBNRv4ROM_v2.0.hdf5` - Effective One Body waveform model
-- `SEOBNRv4ROM_v3.0.hdf5` - Alternative EOB model version
-- NRSur7dq4 model loaded automatically via LALSuite
-
-### Reference Data
-- `H-H1_GWOSC_16KHZ_R1-*.hdf5` - Real LIGO/Virgo detector data (GW Open Science Center)
-- Used only for noise characteristics, not in boson star analysis
-
-### Input Noise
-- `H1_PSD.dat`, `L1_PSD.dat` - Power spectral densities (single column, power values)
-- Can be updated with different detector sensitivities
-
-## Legacy Files (Can be Ignored)
-
-The following are **test/exploratory notebooks** from earlier development stages:
-
-**Testing & Development**:
-- `full_working_pipeline*.ipynb` - Earlier pipeline iterations
-- `taper_tests.ipynb` - Signal windowing experiments
-- `*_test*.ipynb` - Various test notebooks
-- `*_test*.py` - Python test scripts
-- `ringdown_tests/` - Ringdown extraction tests
-
-**Data / Outputs**:
-- `bilby_outputs/` - Bilby inference test outputs (legacy)
-- `plot_archive/` - Archived plots (legacy)
-- `interim_report_plots/` - Old report figures (legacy)
-
-**Status**: Retained under `legacy/` for reference; safe to ignore for current workflows.
-
-## Complete Workflow: Injection → Analysis → Results
-
-### Step 1: Generate Injections (this repo)
-```
-Run: barebones_injection.ipynb
-Output: injection_metadata.csv, H1_injections.h5, L1_injections.h5, *_PSD.dat
-```
-
-### Step 2: Copy to Parameter Estimation Repo
-```bash
-cp *.csv ../tdinf_example/data/
-cp *_injections.h5 ../tdinf_example/data/
-cp *_PSD.dat ../tdinf_example/data/
-```
-
-### Step 3: Run Parameter Estimation (tdinf_example)
-```
-cd ../tdinf_example/code
-./script.sh
-Output: output/test_results.h5, output/test_results.dat
-```
-
-### Step 4: Analyze Results (tdinf_example)
-```
-Open: plot_my_results.ipynb
-Visualize: Posteriors, parameter recovery, convergence
-```
-
-### Step 5: Ringdown Analysis (this repo)
-```
-Run: bs_ringdown.ipynb
-Output: ringdown_results/, ringdown_results_plots/
-Analyze: QNM frequencies, damping times
-```
-
-## Environment Setup
-
-Uses conda environment `tdinf`:
-
-```bash
-conda activate tdinf
-
-# Required packages:
-# - lalsuite (NRSur7dq4 waveforms)
-# - bilby (alternative inference framework, optional)
-# - numpy, scipy, matplotlib
-# - pandas, h5py
-```
-
-## References
-
-- **LALSuite & NRSur7dq4**: https://git.ligo.org/lalsuite/lalsuite
-- **tdinf framework**: https://github.com/tedwards2000/tdinf
-- **emcee sampler**: Foreman-Mackey et al. 2013
-- **Boson stars in GR**: See physics references in your group
-
----
-
-**Last Updated**: January 2026  
-**Pipeline Status**: Active (ready for cleanup)  
-**Main Notebooks**: `barebones_injection.ipynb`, `bs_ringdown.ipynb`
+- The shared external `datadir/` remains the canonical interface between bilby and tdinf.
+- The reorganization is structural only; it does not change the intended analysis workflow.

@@ -1,4 +1,16 @@
-SEOBNRv4ROM_v3.0.hdf5
-SEOBNRv4ROM_v2.0.hdf5
-H-H1_GWOSC_16KHZ_R1-1126259447-32.hdf5
-Miniconda3-latest-Linux-x86_64.sh
+# Local-only storage and scratch
+local/
+.conda/
+outdir/
+bilby_outputs/
+
+# Generated exports
+H1_PSD.dat
+L1_PSD.dat
+
+# Jupyter
+.ipynb_checkpoints/
+
+# compiled python files
+__pycache__/
+*.pyc
